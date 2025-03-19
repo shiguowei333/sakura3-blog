@@ -68,7 +68,7 @@ class WebInfo(models.Model):
     aside_inform = models.CharField(max_length=128, blank=True, verbose_name='侧面公告')
     web_time = models.DateTimeField(default=timezone.now, null=True, verbose_name='网站创建时间')
     archival_inform = models.CharField(max_length=128, blank=True, verbose_name='备案信息')
-    slideshow = models.CharField(max_length=128, blank=True, verbose_name='轮播图')
+    slideshow = models.TextField(blank=True, verbose_name='轮播图')
 
     class Meta:
         verbose_name = "网站信息表"

@@ -6,4 +6,5 @@ app_name = 'user'
 
 urlpatterns = [
     path('user/', views.UserInfo.as_view()),
+    path('web/', views.WebInfo.as_view())
 ]
