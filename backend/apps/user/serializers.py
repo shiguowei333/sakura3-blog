@@ -10,18 +10,14 @@ class LoginReqSerializer(serializers.Serializer):
     username = serializers.CharField(required=True)
     password = serializers.CharField(write_only=True, required=True)
 
-# 登录响应序列化器，格式化返回user表中需要的数据
+# 站长信息的列化器，返回user表中需要的数据
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'nick_name', 'avatar']
+        fields = ['nick_name', 'avatar', 'title', 'bg_img', 'github_url']
 
 
     def update(self, instance, validated_data):
-        validated_data.pop('password', None)
-        roles = validated_data.pop('roles', None)
-        if roles is not None:
-            instance.roles.set(roles)
         for key, value in validated_data.items():
             setattr(instance, key, value)
         instance.save()

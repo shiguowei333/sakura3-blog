@@ -1,22 +1,16 @@
-from pyexpat.errors import messages
-from rest_framework import viewsets
-from rest_framework.decorators import action
+from rest_framework import status
+from rest_framework.views import APIView
 
-from utils.response import DetailResponse
-from utils.viewset import CustomViewSet
-from .models import User
+from utils.response import FailureResponse, DetailResponse
 from .serializers import UserSerializer
 
 
-class UserViewSet(CustomViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+class UserInfo(APIView):
+    def post(self, request, *args, **kwargs):
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.update(request.user, serializer.validated_data)
+            return DetailResponse(message="修改成功")
+        else:
+            return FailureResponse(message=serializer.errors)
 
-    def get_queryset(self):
-        username = self.request.query_params.get('username', '')
-        telephone = self.request.query_params.get('telephone', '')
-        is_active = self.request.query_params.get('is_active', '')
-        self.queryset =  self.queryset.filter(username__icontains=username, telephone__icontains=telephone)
-        if is_active != '':
-            return self.queryset.filter(is_active=is_active)
-        return self.queryset

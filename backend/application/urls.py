@@ -37,4 +37,5 @@ urlpatterns = [
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='swagger'),
     path('api/auth/login', permissions.LoginView.as_view(), name='login'),
     path('api/auth/token/refresh', permissions.RefreshView.as_view(), name='refresh'),
+    path('api/admin/info/', include('apps.user.urls')),
 ]

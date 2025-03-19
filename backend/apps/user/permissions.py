@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenRefreshView
 
-from utils.response import SuccessResponse, FailureResponse, DetailResponse
+from utils.response import FailureResponse, DetailResponse, BaseResponse
 from .serializers import LoginReqSerializer, UserSerializer
 
 
@@ -21,7 +21,7 @@ class LoginView(APIView):
         serializer = LoginReqSerializer(data=request.data)
         # 登录参数序列化器校验
         if not serializer.is_valid():
-            return FailureResponse(message=serializer.errors)
+            return BaseResponse(code=status.HTTP_200_OK, success= False, message=serializer.errors)
 
         username = serializer.validated_data.get('username')
         password = serializer.validated_data.get('password')
@@ -36,11 +36,10 @@ class LoginView(APIView):
         current_time = timezone.now()
         expiration_time = current_time + access_token.lifetime
         expiration_time_str = expiration_time.strftime("%Y-%m-%d %H:%M:%S")
-        user_data = UserSerializer(user).data
         data = {
-            'avatar': user_data['avatar'],
-            'username': user_data['username'],
-            'nickname': user_data['nick_name'],
+            'avatar': user.avatar,
+            'username': user.username,
+            'nickname': user.nick_name,
             'accessToken': str(access_token),
             'refreshToken': str(refresh),
             'expires': expiration_time_str
