@@ -25,12 +25,12 @@ export default [
     ]
   },
   {
-    path: "/webinfo",
-    name: "webinfo",
-    component: () => import("@/views/blog/webinfo/index.vue"),
+    path: "/info",
+    name: "info",
+    component: () => import("@/views/blog/info/index.vue"),
     meta: {
       icon: "ep:home-filled",
-      title: "网站信息",
+      title: "基础信息",
       showLink: true
     }
   }

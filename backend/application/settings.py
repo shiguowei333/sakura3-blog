@@ -27,6 +27,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # 项目初始默认密钥
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-pv3!6^0f(!(!0x)!x)npw2%^l%)6zccrb#p&&%v)9pwrwo86-5'
+QINIU_ACCESS_KEY = ''
+QINIU_SECRET_KEY = ''
+QINIU_BUCKET_NAME = ''
 
 # 是否开启DEBUG模式
 # SECURITY WARNING: don't run with debug turned on in production!

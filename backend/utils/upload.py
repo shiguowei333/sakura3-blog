@@ -19,7 +19,7 @@ def upload_file(file_name, file_path, file_data):
 
 class SlideUploadView(APIView):
     def post(self, request, *args, **kwargs):
-        res = upload_file(request.data['filename'],'slideshow/',request.data['file'])
+        res = upload_file(request.data['file_name'],'web_img/',request.data['file'])
         if res.status_code == 200:
             file_info = json.loads(res.text_body)
             data = {
