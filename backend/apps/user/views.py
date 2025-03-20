@@ -1,11 +1,10 @@
-from rest_framework import status
 from rest_framework.views import APIView
 
 from utils.response import FailureResponse, DetailResponse
 from .serializers import UserSerializer, WebSerializer
 
 
-class UserInfo(APIView):
+class UserInfoView(APIView):
     def get(self, request):
         serializer = UserSerializer(request.user)
         return DetailResponse(serializer.data)
@@ -17,7 +16,7 @@ class UserInfo(APIView):
         else:
             return FailureResponse(message=serializer.errors)
 
-class WebInfo(APIView):
+class WebInfoView(APIView):
     def get(self, request):
         serializer = WebSerializer(request.user.web_info)
         return DetailResponse(serializer.data)
