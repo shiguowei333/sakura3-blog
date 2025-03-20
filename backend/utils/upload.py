@@ -19,14 +19,22 @@ def upload_file(file_name, file_path, file_data):
 
 class SlideUploadView(APIView):
     def post(self, request, *args, **kwargs):
-        res = upload_file(request.data['file_name'],'web_img/',request.data['file'])
-        if res.status_code == 200:
-            file_info = json.loads(res.text_body)
-            data = {
-                'req_id': res.req_id,
-                'file_name': file_info['key'].split('/')[-1],
-                'file_path': file_info['key'],
-                'url': res.url + file_info['key']
-            }
-            return DetailResponse(data, message='上传成功')
-        return FailureResponse(message='上传失败')
+        # res = upload_file(request.data['file_name'],'web_img/',request.data['file'])
+        # if res.status_code == 200:
+        #     file_info = json.loads(res.text_body)
+        #     data = {
+        #         'req_id': res.req_id,
+        #         'file_name': file_info['key'].split('/')[-1],
+        #         'file_path': file_info['key'],
+        #         'url': res.url + file_info['key']
+        #     }
+        #     return DetailResponse(data, message='上传成功')
+        # return FailureResponse(message='上传失败')
+
+        data = {
+            'req_id': '432151435134',
+            'file_name': 'pEwTqX9.jpg',
+            'file_path': 'https://s21.ax1x.com/2025/03/20/pEwTqX9.jpg',
+            'url': 'https://s21.ax1x.com/2025/03/20/pEwTqX9.jpg'
+        }
+        return DetailResponse(data=data, message='上传成功')

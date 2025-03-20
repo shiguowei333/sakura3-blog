@@ -13,12 +13,6 @@ class LoginReqSerializer(serializers.Serializer):
     username = serializers.CharField(required=True)
     password = serializers.CharField(write_only=True, required=True)
 
-# 站长信息的列化器，更新站长信息
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['nick_name', 'avatar', 'title', 'bg_img', 'github_url']
-
 
     def update(self, instance, validated_data):
         for key, value in validated_data.items():
@@ -41,6 +35,14 @@ class JsonListField(serializers.Field):
         if isinstance(data, list):
             return json.dumps(data)
         raise serializers.ValidationError("必须为有效的JSON列表格式")
+
+
+# 站长信息的列化器，更新站长信息
+class UserSerializer(serializers.ModelSerializer):
+    bg_img = JsonListField()
+    class Meta:
+        model = User
+        fields = ['nick_name', 'avatar', 'title', 'bg_img', 'github_url']
 
 
 # 网站信息的序列化器，更新网站信息

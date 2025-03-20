@@ -19,5 +19,5 @@ export const getWebInfo = () => {
 
 /** 更新网站信息 */
 export const updateWebInfo = (data) => {
-    return http.request(url + 'web', { data });
+    return http.post(url + 'web', { data });
 };

@@ -25,8 +25,8 @@
                 </el-form-item>
                 <el-form-item label="背景：" prop="bg_img">
                     <div style="width: 100%;">
-                        <el-upload ref="upload" v-model:file-list="bg_list" list-type="picture" :headers="headers"
-                            :before-upload="beforeUpload" :limit="1" :on-exceed="handleExceed" :data="getFileData"
+                        <el-upload ref="upload" v-model:file-list="userInfo.bg_img" list-type="picture" :headers="headers" :on-success="handleBgSuccess"
+                            :before-upload="beforeUpload" :limit="1" :on-exceed="handleExceed" :data="getFileData" :on-remove="handleRemoveBg"
                             action="http://127.0.0.1:8000/api/admin/info/web/upload">
                             <div style="display: flex;">
                                 <el-button :icon="useRenderIcon(Upload)">上传背景图</el-button>
@@ -50,22 +50,22 @@
                 </el-form-item>
                 <el-form-item label="侧边栏公告：" prop="aside_inform">
                     <el-input v-model="webInfo.aside_inform" type="textarea" maxlength="500" :rows="3"
-                        show-word-limit="true" placeholder="请输入侧边栏公告" />
+                        show-word-limit placeholder="请输入侧边栏公告" />
                 </el-form-item>
                 <el-divider content-position="center">网站信息</el-divider>
                 <el-form-item label="备案信息：" prop="archival_inform">
                     <el-input v-model="webInfo.archival_inform" maxlength="100" placeholder="请输入备案信息" />
                 </el-form-item>
                 <el-form-item label="运行时间：" prop="web_time">
-                    <el-date-picker v-model="webInfo.web_time" type="datetime" placeholder="运行时间" />
+                    <el-date-picker v-model="webInfo.web_time" type="datetime" placeholder="运行时间" value-format="YYYY-MM-DD HH:mm:ss" />
                 </el-form-item>
                 <el-divider content-position="center">首页轮播图</el-divider>
                 <el-form-item>
-                    <div style="margin: 0 auto;">
-                        <el-upload v-model:file-list="webInfo.slideshow" :headers="headers"
-                            :before-upload="beforeUpload" :data="getFileData" :class="{ 'hideUploadBtn': webInfo.slideshow.length >= 6 }"
+                    <div style="margin: 0 auto;" class="slideshow">
+                        <el-upload v-model:file-list="slideshowList" :headers="headers"
+                            :before-upload="beforeUpload" :data="getFileData" :class="{ 'hideUploadBtn': slideshowList.length >= 6 }"
                             action="http://127.0.0.1:8000/api/admin/info/web/upload" list-type="picture-card" :limit="6"
-                            :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
+                            :on-preview="handlePictureCardPreview">
                             <el-icon>
                                 <IconifyIconOffline :icon="Plus" />
                             </el-icon>
@@ -79,7 +79,7 @@
             </el-form>
             <div class="footer_button">
                 <el-button type="primary" @click="handleSubmit">保存</el-button>
-                <el-button @click="isDialogVisible = false">重置</el-button>
+                <el-button @click="resetInfo">重置</el-button>
             </div>
         </div>
     </div>
@@ -98,8 +98,9 @@ import { getToken } from "@/utils/auth";
 import Plus from '@iconify-icons/ep/plus'
 import Upload from '@iconify-icons/ep/upload'
 import { onMounted } from 'vue';
-import { genFileId } from 'element-plus'
+import { genFileId, ElMessage } from 'element-plus'
 import { getUserInfo, updateUserInfo, getWebInfo, updateWebInfo} from '@/api/blog/info'
+import { isAllEmpty } from "@pureadmin/utils";
 
 
 const infoType = ref(0)
@@ -121,11 +122,11 @@ const beforeUpload = (file) => {
     if (!isJpgOrPng)
         message.error('文件格式必须是jpg或png或webp')
 
-    const isLt2M = file.size / 1024 / 1024 < 5
-    if (!isLt2M)
+    const isLt5M = file.size / 1024 / 1024 < 5
+    if (!isLt5M)
         message.error('图片必须小于 5MB')
 
-    return isJpgOrPng && isLt2M
+    return isJpgOrPng && isLt5M
 }
 
 // 个人信息部分
@@ -135,10 +136,9 @@ const userInfo = ref({
     nick_name: '',
     avatar: '',
     title: '',
-    bg_img: '',
+    bg_img: [],
     github_url: ''
 })
-const bg_list = ref([])
 
 const upload = ref(null)
 const handleExceed = (files) => {
@@ -148,13 +148,21 @@ const handleExceed = (files) => {
     upload.value.handleStart(file)
 }
 
-const handleAvatarSuccess = () => {
-
+const handleAvatarSuccess = (res) => {
+  userInfo.value.avatar = res.data.file_path
 }
 
-const handleChangeBack = () => {
-
+const handleBgSuccess = (res) => {
+  userInfo.value.bg_img = [{
+    name: res.data.file_name,
+    url: res.data.file_path
+  }]
 }
+
+const handleRemoveBg = () => {
+  userInfo.value.bg_img = []
+}
+
 
 // 网站信息部分
 const webRules = ref([])
@@ -169,21 +177,57 @@ const webInfo = ref({
 })
 const dialogImageUrl = ref('')
 const dialogVisible = ref(false)
+const slideshowList = ref([])
 
 const handlePictureCardPreview = (uploadFile) => {
     dialogImageUrl.value = uploadFile.url
     dialogVisible.value = true
 }
 
-const handleRemove = (uploadFile, uploadFiles) => {
 
+
+const handleSubmit = async() => {
+  if(infoType.value) {
+    webInfo.value.slideshow = slideshowList.value.map(element => {
+      if(element.response) {
+        return element.response.data.url
+      }
+      return element.url
+    })
+  }
+  let data = infoType.value?webInfo.value:userInfo.value
+  let res = infoType.value?await updateWebInfo(data):await updateUserInfo(data)
+  if(res.code == 2000) {
+    ElMessage({
+      type: 'success',
+      message: '修改成功'
+    })
+    infoType.value?getWeb():getUser()
+  }
+}
+
+const resetInfo = async() => {
+  infoType.value?getWeb():getUser()
+}
+
+const getUser = async() => {
+  let userRes = await getUserInfo()
+  userInfo.value = userRes.data
+}
+
+const getWeb = async() => {
+  let webRes = await getWebInfo()
+  webInfo.value = webRes.data
+  slideshowList.value = webInfo.value.slideshow.map(element => {
+    return {
+      url: element
+    }
+  })
 }
 
 onMounted(async() => {
-    let userRes = await getUserInfo()
-    let webRes = await getWebInfo()
-    userInfo.value = userRes.data
-    webInfo.value = webRes.data
+    getUser()
+    getWeb()
 })
 </script>
 
@@ -246,7 +290,7 @@ onMounted(async() => {
     margin-left: 0 !important;
 }
 
-::v-deep(.el-upload-list__item), ::v-deep(.el-upload--picture-card) {
+::v-deep(.slideshow .el-upload-list__item), ::v-deep(.el-upload--picture-card) {
     width: 120px;
     height: 120px;
 }
