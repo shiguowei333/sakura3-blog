@@ -57,7 +57,7 @@ INSTALLED_APPS = [
 ]
 # 博客应用
 MY_APPS = [
-
+    'apps.tag'
 ]
 
 INSTALLED_APPS += MY_APPS
