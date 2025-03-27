@@ -11,3 +11,10 @@ from .serializers import TagSerializer
 class TagViewSet(CustomViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
+
+    def get_queryset(self):
+        name = self.request.query_params.get('name')
+        if name:
+            return self.queryset.filter(tag_name__icontains=name)
+        else:
+            return self.queryset
