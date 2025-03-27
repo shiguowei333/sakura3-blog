@@ -27,11 +27,21 @@ export default [
   {
     path: "/info",
     name: "info",
-    component: () => import("@/views/blog/info/index.vue"),
+    component: () => import("@/views/admin/info/index.vue"),
     meta: {
       icon: "ep:home-filled",
       title: "基础信息",
       showLink: true
     }
-  }
+  },
+  {
+    path: "/tag",
+    name: "tag",
+    component: () => import("@/views/admin/tag/index.vue"),
+    meta: {
+      icon: "ep:home-filled",
+      title: "标签管理",
+      showLink: true
+    }
+  },
 ];

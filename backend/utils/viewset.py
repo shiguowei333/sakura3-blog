@@ -55,7 +55,7 @@ class CustomViewSet(ModelViewSet):
         if isinstance(exc, APIException):
             # 如果是 DRF 的标准 API 异常类型
             response = super().handle_exception(exc)
-            return FailureResponse(message=response.data.get('message'), status=response.status_code)
+            return response
         else:
             # 对于非 DRF 的异常类型（例如Python的原生异常），返回500错误
             return FailureResponse(message=str(exc), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
