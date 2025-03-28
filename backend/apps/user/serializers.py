@@ -51,4 +51,4 @@ class WebSerializer(serializers.ModelSerializer):
     slideshow = JsonListField()
     class Meta:
         model =WebInfo
-        fields = ['web_name', 'header_inform', 'aside_inform', 'web_name', 'archival_inform', 'slideshow', 'web_time']
+        fields = ['web_name', 'header_inform', 'aside_inform', 'archival_inform', 'slideshow', 'web_time']

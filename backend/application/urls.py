@@ -38,5 +38,6 @@ urlpatterns = [
     path('api/admin/auth/login', permissions.LoginView.as_view(), name='login'),
     path('api/admin/auth/token/refresh', permissions.RefreshView.as_view(), name='refresh'),
     path('api/admin/info/', include('apps.user.urls')),
-    path('api/admin/tag/', include('apps.tag.urls'))
+    path('api/admin/tag/', include('apps.tag.urls')),
+    path('api/admin/category/', include('apps.category.urls'))
 ]
