@@ -44,4 +44,14 @@ export default [
       showLink: true
     }
   },
+  {
+    path: "/category",
+    name: "category",
+    component: () => import("@/views/admin/category/index.vue"),
+    meta: {
+      icon: "ep:home-filled",
+      title: "分类管理",
+      showLink: true
+    }
+  },
 ];

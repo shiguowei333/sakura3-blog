@@ -99,8 +99,7 @@ import Plus from '@iconify-icons/ep/plus'
 import Upload from '@iconify-icons/ep/upload'
 import { onMounted } from 'vue';
 import { genFileId, ElMessage } from 'element-plus'
-import { getUserInfo, updateUserInfo, getWebInfo, updateWebInfo} from '@/api/blog/info'
-import { isAllEmpty } from "@pureadmin/utils";
+import { getUserInfo, updateUserInfo, getWebInfo, updateWebInfo} from '@/api/admin/info'
 
 
 const infoType = ref(0)
