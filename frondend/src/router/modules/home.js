@@ -8,7 +8,7 @@ export default [
     component: Layout,
     redirect: "/welcome",
     meta: {
-      icon: "ep:home-filled",
+      icon: "ep:data-line",
       title: "首页",
       rank: 0
     },
@@ -29,7 +29,7 @@ export default [
     name: "info",
     component: () => import("@/views/admin/info/index.vue"),
     meta: {
-      icon: "ep:home-filled",
+      icon: "ep:credit-card",
       title: "基础信息",
       showLink: true
     }
@@ -39,7 +39,7 @@ export default [
     name: "tag",
     component: () => import("@/views/admin/tag/index.vue"),
     meta: {
-      icon: "ep:home-filled",
+      icon: "ep:collection-tag",
       title: "标签管理",
       showLink: true
     }
@@ -49,7 +49,7 @@ export default [
     name: "category",
     component: () => import("@/views/admin/category/index.vue"),
     meta: {
-      icon: "ep:home-filled",
+      icon: "ep:set-up",
       title: "分类管理",
       showLink: true
     }
