@@ -27,6 +27,8 @@ class ArticleViewSet(CustomViewSet):
     def get_queryset(self):
         title = self.request.query_params.get('title')
         category = self.request.query_params.get('category')
-        tag = self.request.query_params.get('tag')
-        print(title, category, tag)
+        if title:
+            self.queryset = self.queryset.filter(title__icontains=title)
+        if category:
+            self.queryset = self.queryset.filter(article_category=category)
         return self.queryset
