@@ -9,7 +9,6 @@ from .serializers import CategorySerializer
 class CategoryViewSet(CustomViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    pagination_class = CustomPagination
 
     def get_queryset(self):
         name = self.request.query_params.get('name')

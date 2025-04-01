@@ -66,7 +66,7 @@ y
           return config;
         }
         /** 请求白名单，放置一些不需要`token`的接口（通过设置请求白名单，防止`token`过期后再请求造成的死循环问题） */
-        const whiteList = ["/refresh-token", "/login"];
+        const whiteList = ["/token/refresh", "/login"];
         return whiteList.some(url => config.url.endsWith(url))
           ? config
           : new Promise(resolve => {
@@ -79,7 +79,7 @@ y
                     PureHttp.isRefreshing = true;
                     // token过期刷新
                     useUserStoreHook()
-                      .handRefreshToken({ refreshToken: data.refreshToken })
+                      .handRefreshToken({ refresh: data.refreshToken })
                       .then(res => {
                         const token = res.data.accessToken;
                         config.headers["Authorization"] = formatToken(token);

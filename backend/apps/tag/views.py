@@ -12,7 +12,6 @@ from .serializers import TagSerializer
 class TagViewSet(CustomViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-    pagination_class = CustomPagination
 
     def get_queryset(self):
         name = self.request.query_params.get('name')
