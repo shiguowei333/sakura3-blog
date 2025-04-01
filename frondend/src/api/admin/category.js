@@ -3,7 +3,7 @@ import { http } from "@/utils/http";
 const url = 'admin/category/'
 
 /** 获取所有分类信息 */
-export const getCategorys = (name) => {
+export const getCategorys = (name = '') => {
     return http.get(url, {params: {name}});
 };
 

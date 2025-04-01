@@ -35,6 +35,16 @@ export default [
     }
   },
   {
+    path: "/article",
+    name: "article",
+    component: () => import("@/views/admin/article/index.vue"),
+    meta: {
+      icon: "ep:document",
+      title: "文章管理",
+      showLink: true
+    }
+  },
+  {
     path: "/tag",
     name: "tag",
     component: () => import("@/views/admin/tag/index.vue"),
