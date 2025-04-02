@@ -31,9 +31,14 @@
                     :cell-style="{ 'text-align': 'center' }"
                     :header-cell-style="{ 'background-color': 'var(--el-fill-color-light)', 'text-align': 'center', 'color': 'var(--el-text-color-primary)' }">
                     <el-table-column prop="article_title" label="文章标题" />
-                    <el-table-column prop="article_category" label="文章数量" />
-                    <el-table-column prop="create_time" label="创建时间" />
-                    <el-table-column prop="update_time" label="更新时间" />
+                    <el-table-column prop="category_name" label="文章分类" />
+                    <el-table-column prop="create_time" label="标签" >
+                        <template #default="{ row }">
+                            <el-tag v-for="tag in row.tags" type="primary" style="margin-right: 5px;">{{ tag.tag_name }}</el-tag>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="user" label="作者" />
+                    <el-table-column prop="create_time" label="发布时间" />
                     <el-table-column label="操作" align="center" fixed="right" min-width="100px">
                         <template #default="{ row }">
                             <div class="ellink">
@@ -44,29 +49,17 @@
                     </el-table-column>
                 </el-table>
             </div>
+            <div class="pagenation">
+                <el-pagination v-model:current-page="searchForm.page" v-model:page-size="searchForm.limit" :total="total" background layout="->, total, prev, pager, next, sizes" :page-sizes="[10, 20, 50, 100]" @change="getArticleData" />
+            </div>
         </div>
-        <!-- 新增/编辑表单 -->
-        <!-- <el-dialog v-model="isDialogVisible" :title="isEditMode ? '编辑分类' : '新增分类'" :width="'20%'"
-            @close="handleCloseDialog">
-            <el-form ref="categoryFormRef" :model="categoryData" :rules="rules" label-width="80px" label-position="right">
-                <el-form-item label="分类名称" prop="category_name">
-                    <el-input v-model="categoryData.category_name" maxlength="20" show-word-limit placeholder="请输入分类名称" />
-                </el-form-item>
-            </el-form>
-            <template #footer>
-                <div class="dialog-footer">
-                    <el-button @click="isDialogVisible = false">取消</el-button>
-                    <el-button type="primary" @click="handleSubmit">确认</el-button>
-                </div>
-            </template>
-        </el-dialog> -->
     </div>
 </template>
 
 <script setup>
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 import { ref, reactive, onMounted } from "vue";
-import { getArticles, addArticle, updateArticle, deleteArticle } from "@/api/admin/article";
+import { getArticles, deleteArticle } from "@/api/admin/article";
 import { getCategorys } from "@/api/admin/category";
 import { ElMessage, ElMessageBox } from "element-plus";
 import Search from "@iconify-icons/ri/search-line";
@@ -87,12 +80,14 @@ const searchForm = reactive({
     limit: 10
 });
 const total = ref(0)
+const page = ref(10)
 const loading = ref(false);
 const categoryList = ref([])
 
 // 搜索点击事件
 const onSearch = async () => {
     loading.value = true
+    searchForm.page = 1
     await getArticleData()
     loading.value = false
 }
@@ -110,7 +105,7 @@ const getArticleData = async () => {
     let res = await getArticles(searchForm)
     if (res.code == 2000) {
         dataList.value = res.data.records
-        total.value = res.total
+        total.value = res.data.total
     }
     let categoryRes = await getCategorys()
     if (res.code == 2000) {
@@ -119,94 +114,41 @@ const getArticleData = async () => {
 }
 
 
+// 删除文章相关
+const delId = ref('')
+const delName = ref('')
 
-// // 表单相关
-// const isDialogVisible = ref(false);
-// const isEditMode = ref(false);
-// const categoryFormRef = ref(null)
-// const categoryData = ref({
-//     id: '',
-//     category_name: ''
-// })
-// // 校验规则
-// const rules = reactive({
-//     category_name: [{ required: true, message: '请输入部门名称', trigger: 'blur' }]
-// })
-// // 处理新增按钮点击事件逻辑
-// const handleOnAdd = async () => {
-//     isDialogVisible.value = true
-//     isEditMode.value = false
-// }
-// // 处理编辑按钮点击事件逻辑
-// const handleOnEdit = async (e, row) => {
-//     isDialogVisible.value = true
-//     isEditMode.value = true
-//     categoryData.value = row
-// }
-// // 处理关闭dialog页面清空表单数据
-// const handleCloseDialog = () => {
-//     categoryData.value.id = ""
-//     categoryData.value.category_name = ""
-// }
+// 处理删除按钮点击事件逻辑
+const handleOnDel = (e, row) => {
+    delId.value = row.id
+    delName.value = row.article_title
+    ElMessageBox.confirm(
+        '是否确认删除?',
+        '提示',
+        {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning',
+        }
+    )
+        .then(async () => {
 
+            let res = await deleteArticle(delId.value)
+            if (res.success) {
+                getArticleData()
+                ElMessage({
+                    type: 'success',
+                    message: '删除成功'
+                })
 
-// // 处理提交事件
-// const handleSubmit = () => {
-//     categoryFormRef.value.validate(async (valid) => {
-//         if (valid) {
-//             let res = isEditMode.value ? await updateCategory(categoryData.value.id, categoryData.value) : await addCategory(categoryData.value)
-//             if (res.success) {
-//                 isDialogVisible.value = false
-//                 getCategoryData()
-//                 ElMessage({
-//                     type: 'success',
-//                     message: isEditMode.value ? '编辑成功' : '新增成功'
-//                 })
-//             } else {
-//                 ElMessage({
-//                     type: 'error',
-//                     message: res.message
-//                 })
-//             }
-//         }
-//     })
-// }
-
-// // 删除分类相关
-// const delId = ref('')
-// const delName = ref('')
-
-// // 处理删除按钮点击事件逻辑
-// const handleOnDel = (e, row) => {
-//     delId.value = row.id
-//     delName.value = row.category_name
-//     ElMessageBox.confirm(
-//         `是否确认删除'${delName.value}'?`,
-//         '提示',
-//         {
-//             confirmButtonText: '确定',
-//             cancelButtonText: '取消',
-//             type: 'warning',
-//         }
-//     )
-//         .then(async () => {
-
-//             let res = await deleteCategory(delId.value)
-//             if (res.success) {
-//                 getCategoryData()
-//                 ElMessage({
-//                     type: 'success',
-//                     message: '删除成功'
-//                 })
-
-//             } else {
-//                 ElMessage({
-//                     type: 'error',
-//                     message: res.message
-//                 })
-//             }
-//         })
-// }
+            } else {
+                ElMessage({
+                    type: 'error',
+                    message: res.message
+                })
+            }
+        })
+}
 
 
 onMounted(() => {
@@ -273,5 +215,10 @@ onMounted(() => {
 
 .dialog-footer {
     text-align: right;
+}
+
+.pagenation {
+    margin: 10px 0;
+    margin-right: 15px;
 }
 </style>

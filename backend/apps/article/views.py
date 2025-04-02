@@ -28,7 +28,7 @@ class ArticleViewSet(CustomViewSet):
         title = self.request.query_params.get('title')
         category = self.request.query_params.get('category')
         if title:
-            self.queryset = self.queryset.filter(title__icontains=title)
+            self.queryset = self.queryset.filter(article_title__icontains=title)
         if category:
-            self.queryset = self.queryset.filter(article_category=category)
+            self.queryset = self.queryset.filter(category=category)
         return self.queryset
