@@ -46,16 +46,3 @@ class CustomViewSet(ModelViewSet):
 
         serializer = self.get_serializer(queryset, many=True)
         return DetailResponse(serializer.data, message="查询成功！")
-
-
-    def handle_exception(self, exc):
-        """
-        捕获异常并返回自定义响应格式。
-        """
-        if isinstance(exc, APIException):
-            # 如果是 DRF 的标准 API 异常类型
-            response = super().handle_exception(exc)
-            return response
-        else:
-            # 对于非 DRF 的异常类型（例如Python的原生异常），返回500错误
-            return FailureResponse(message=str(exc), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
