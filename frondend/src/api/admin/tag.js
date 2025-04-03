@@ -3,7 +3,7 @@ import { http } from "@/utils/http";
 const url = 'admin/tag/'
 
 /** 获取所有标签信息 */
-export const getTags = (name) => {
+export const getTags = (name = '') => {
     return http.get(url, {params: {name}});
 };
 

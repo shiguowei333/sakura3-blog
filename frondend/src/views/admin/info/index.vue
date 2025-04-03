@@ -88,7 +88,7 @@
 <script setup>
 
 defineOptions({
-    name: 'info'
+    name: 'Info'
 })
 
 import { ref } from 'vue'
