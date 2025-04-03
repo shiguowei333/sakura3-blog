@@ -4,7 +4,7 @@
         <div class="top">
             <el-form ref="searchFormRef" :inline="true" :model="searchForm" class="searchform">
                 <el-form-item label="文章标题：" prop="title">
-                    <el-input v-model="searchForm.title" placeholder="请输入分类名称" clearable class="!w-[180px]" />
+                    <el-input v-model="searchForm.title" placeholder="请输入文章标题" clearable class="!w-[180px]" />
                 </el-form-item>
                 <el-form-item label="文章分类：" prop="category">
                     <el-select v-model="searchForm.category" placeholder="请选择分类" class="!w-[150px]" clearable>
@@ -23,7 +23,7 @@
         <div ref="tableContainer" class="table">
             <div class="title">
                 <span style="font-size: 20px; font-weight: 700; height: 32px; line-height: 32px;">文章管理</span>
-                <el-button type="primary" :icon="useRenderIcon(Add)" @click="handleOnAdd"> 新增 </el-button>
+                <el-button type="primary" :icon="useRenderIcon(Add)" @click="$router.push({name: 'pubarticle'})"> 发布新文章 </el-button>
             </div>
             <div class="inner-table">
                 <el-table :data="dataList" class="el-table" height="100%"
@@ -42,7 +42,7 @@
                     <el-table-column label="操作" align="center" fixed="right" min-width="100px">
                         <template #default="{ row }">
                             <div class="ellink">
-                                <el-link :underline="false" type="primary" @click="handleOnEdit(e, row)">编辑</el-link>
+                                <el-link :underline="false" type="primary" @click="$router.push({name: 'pubarticle', query: {id: row.id}})">编辑</el-link>
                                 <el-link :underline="false" type="danger" @click="handleOnDel(e, row)">删除</el-link>
                             </div>
                         </template>
@@ -65,11 +65,14 @@ import { ElMessage, ElMessageBox } from "element-plus";
 import Search from "@iconify-icons/ri/search-line";
 import Reset from "@iconify-icons/ri/refresh-line";
 import Add from "@iconify-icons/ri/add-circle-line";
+import { useRouter } from 'vue-router'
 
 
 defineOptions({
-    name: "article"
+    name: "ArticleList"
 });
+
+const $router = useRouter()
 
 // 搜索区域相关
 const searchFormRef = ref(null);
@@ -108,7 +111,7 @@ const getArticleData = async () => {
         total.value = res.data.total
     }
     let categoryRes = await getCategorys()
-    if (res.code == 2000) {
+    if (categoryRes.code == 2000) {
         categoryList.value = categoryRes.data.records
     }
 }

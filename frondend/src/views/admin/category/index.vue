@@ -68,7 +68,7 @@ import Add from "@iconify-icons/ri/add-circle-line"
 
 
 defineOptions({
-    name: "category"
+    name: "Category"
 });
 
 // 搜索区域相关

@@ -33,16 +33,39 @@ export default [
       title: "基础信息",
       showLink: true
     }
-  },
-  {
+  },  {
     path: "/article",
     name: "article",
-    component: () => import("@/views/admin/article/index.vue"),
+    component: Layout,
+    redirect: "/articles",
     meta: {
       icon: "ep:document",
       title: "文章管理",
-      showLink: true
-    }
+      rank: 0
+    },
+    children: [
+      {
+        path: "/articles",
+        name: "articles",
+        component: () => import("@/views/admin/article/index.vue"),
+        meta: {
+          icon: "ep:document-copy",
+          title: "文章列表",
+          showLink: true
+        }
+      },
+      {
+        path: "/pubarticle",
+        name: "pubarticle",
+        component: () => import("@/views/admin/pubArticle/index.vue"),
+        meta: {
+          icon: "ep:document-add",
+          title: "发布文章",
+          showLink: true,
+          keepAlive: true
+        }
+      },
+    ]
   },
   {
     path: "/tag",
