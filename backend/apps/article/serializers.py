@@ -5,13 +5,6 @@ from ..category.models import Category
 from ..tag.models import Tag
 
 
-class TagSerializer(serializers.ModelSerializer):
-    id = serializers.CharField()
-    class Meta:
-        model = Tag
-        fields = ['id', 'tag_name']
-
-
 
 class ArticleSerializer(serializers.ModelSerializer):
 
@@ -19,8 +12,8 @@ class ArticleSerializer(serializers.ModelSerializer):
     create_time = serializers.DateTimeField(format='%Y-%m-%d %H:%M:%S', read_only=True)
     update_time = serializers.DateTimeField(format='%Y-%m-%d %H:%M:%S', read_only=True)
     category_name = serializers.CharField(source='category.category_name', read_only=True)
+    tags = serializers.SlugRelatedField(slug_field='tag_name', many=True, read_only=True)
     tag_ids = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all(), many=True, write_only=True)
-    tags = TagSerializer(many=True, read_only=True)
 
     def get_user(self, obj):
         return obj.user.nick_name
