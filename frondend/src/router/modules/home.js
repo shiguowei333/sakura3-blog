@@ -56,7 +56,7 @@ export default [
       },
       {
         path: "/pubarticle",
-        name: "pubarticle",
+        name: "PubArticle",
         component: () => import("@/views/admin/pubArticle/index.vue"),
         meta: {
           icon: "ep:document-add",
