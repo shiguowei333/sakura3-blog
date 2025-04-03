@@ -124,7 +124,8 @@ const handleOnAdd = async () => {
 const handleOnEdit = async (e, row) => {
     isDialogVisible.value = true
     isEditMode.value = true
-    tagData.value = row
+    tagData.value.id = row.id
+    tagData.value.tag_name = row.tag_name
 }
 // 处理关闭dialog页面清空表单数据
 const handleCloseDialog = () => {
@@ -188,6 +189,12 @@ const handleOnDel = (e, row) => {
                     message: res.message
                 })
             }
+        })
+        .catch(() => {
+            ElMessage({
+                type: 'info',
+                message: '取消删除',
+            })
         })
 }
 
