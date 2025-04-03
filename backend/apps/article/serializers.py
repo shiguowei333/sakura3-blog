@@ -4,19 +4,20 @@ from .models import Article
 from ..category.models import Category
 from ..tag.models import Tag
 
-
+class TagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
+        fields = ['id', 'tag_name']
 
 class ArticleSerializer(serializers.ModelSerializer):
 
-    user = serializers.SerializerMethodField()
+    user = serializers.CharField(source='user.nick_name', read_only=True)
     create_time = serializers.DateTimeField(format='%Y-%m-%d %H:%M:%S', read_only=True)
     update_time = serializers.DateTimeField(format='%Y-%m-%d %H:%M:%S', read_only=True)
     category_name = serializers.CharField(source='category.category_name', read_only=True)
-    tags = serializers.SlugRelatedField(slug_field='tag_name', many=True, read_only=True)
+    tags = TagSerializer(many=True, read_only=True)
     tag_ids = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all(), many=True, write_only=True)
 
-    def get_user(self, obj):
-        return obj.user.nick_name
 
 
     class Meta:
@@ -28,10 +29,9 @@ class ArticleSerializer(serializers.ModelSerializer):
 
 
 class HandlerArticleSerializer(ArticleSerializer):
-
     class Meta:
         model = Article
-        fields = ['id', 'article_title', 'article_content', 'category', 'tag_ids']
+        fields = ['id', 'article_title', 'article_content', 'tags', 'category', 'tag_ids']
 
     def create(self, validated_data):
         user = self.context['request'].user
